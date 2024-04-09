@@ -16,7 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls.conf import include
+from django.views.generic import RedirectView
+
 
 urlpatterns = [
+    path("", RedirectView.as_view(url="icymelt/")),
     path("admin/", admin.site.urls),
+    path("icymelt/", include("icymelt.urls")),
 ]
