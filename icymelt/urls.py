@@ -5,5 +5,7 @@ from icymelt import views
 app_name = "icymelt"
 urlpatterns = [
     path("", views.HomeView.as_view(), name='home'),
-    path("table/", views.TableView.as_view(), name='table'),
+    path("ice-experiment/", views.TableIceExpView.as_view(), name='ice_exp'),
+    path("material/", views.TableMaterialView.as_view(), name='material'),
+    path("weather/", views.TableWeatherView.as_view(), name='weather'),
 ]

@@ -1,0 +1,19 @@
+{% extends "table-base.html" %}
+
+{% block tbName %} Weather Cond. {% endblock %}
+
+{% block tbHead %}
+    <tr class="table100-head">
+        <th class="format-col4">id</th>
+        <th class="format-col4">weather</th>
+    </tr>
+{% endblock %}
+
+{% block tbBody %}
+    {% for row in weather %}
+        <tr>
+            <td class="format-col4">{{ row.id }}</td>
+            <td class="format-col4">{{ row.weather }}</td>
+        </tr>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "table-base.html" %}
+
+{% block tbName %} Ice {% endblock %}
+
+{% block tbHead %}
+    <tr class="table100-head">
+        <th class="format-col1">id</th>
+        <th class="format-col2">date</th>
+        <th class="format-col2">temp</th>
+        <th class="format-col2">humidity</th>
+        <th class="format-col2">windspeed</th>
+        <th class="format-col2">weather_cond</th>
+        <th class="format-col2">thickness</th>
+        <th class="format-col2">weight</th>
+        <th class="format-col2">material</th>
+        <th class="format-col2">duration</th>
+        <th class="format-col3">material_id</th>
+        <th class="format-col3">weather_cond_id</th>
+    </tr>
+{% endblock %}
+
+{% block tbBody %}
+    {% for row in ice_exp_list %}
+        <tr>
+            <td class="format-col1">{{ row.id }}</td>
+            <td class="format-col2">{{ row.date }}</td>
+            <td class="format-col2">{{ row.temp }}</td>
+            <td class="format-col2">{{ row.humidity }}</td>
+            <td class="format-col2">{{ row.windspeed }}</td>
+            <td class="format-col2">{{ row.weather_cond }}</td>
+            <td class="format-col2">{{ row.thickness }}</td>
+            <td class="format-col2">{{ row.weight }}</td>
+            <td class="format-col2">{{ row.material }}</td>
+            <td class="format-col2">{{ row.duration }}</td>
+            <td class="format-col3">{{ row.material_id }}</td>
+            <td class="format-col3">{{ row.weather_cond_id }}</td>
+        </tr>
+    {% endfor %}
+{% endblock %}
