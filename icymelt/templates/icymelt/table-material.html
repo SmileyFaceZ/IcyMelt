@@ -1,0 +1,19 @@
+{% extends "table-base.html" %}
+
+{% block tbName %} Material {% endblock %}
+
+{% block tbHead %}
+    <tr class="table100-head">
+        <th class="format-col4">id</th>
+        <th class="format-col4">type</th>
+    </tr>
+{% endblock %}
+
+{% block tbBody %}
+    {% for row in material %}
+        <tr>
+            <td class="format-col4">{{ row.id }}</td>
+            <td class="format-col4">{{ row.type }}</td>
+        </tr>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Table {% block tbName %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'fonts/font-awesome-4.7.0/font-awesome.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/table-util.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/table-main.css' %}">
+
+    <div class="limiter">
+        <div class="container-table100">
+            <div class="wrap-table100">
+                <div class="table100">
+                    <table>
+                        <thead>
+                            {% block tbHead %} {% endblock %}
+                        </thead>
+                        <tbody>
+                            {% block tbBody %} {% endblock %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
