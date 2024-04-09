@@ -5,8 +5,12 @@ from django.http import HttpResponse
 class HomeView(TemplateView):
     template_name = "icymelt/home.html"
 
-    # def get(self, request, *args, **kwargs):
-    #     return HttpResponse("Hello, world. You're at the icymelt index.")
+    def get_context_data(self, **kwargs):
+        return
+
+
+class TableView(TemplateView):
+    template_name = "icymelt/table.html"
 
     def get_context_data(self, **kwargs):
         return
