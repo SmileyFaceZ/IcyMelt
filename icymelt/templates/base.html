@@ -18,12 +18,10 @@
         <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;700&display=swap" rel="stylesheet">
 
         <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-
         <link href="{% static 'css/bootstrap-icons.css' %}" rel="stylesheet">
-
         <link href="{% static 'css/apexcharts.css' %}" rel="stylesheet">
-
         <link href="{% static 'css/tooplate-mini-finance.css' %}" rel="stylesheet">
+        <link href="{% static 'css/loading.css' %}" rel="stylesheet">
 
         <style>
           #list {
@@ -33,6 +31,21 @@
     </head>
 
     <body>
+        <div id="loading-overlay">
+            <div class="loading-body">
+                <div class="pencil">
+                    <div class="pencil__ball-point"></div>
+                    <div class="pencil__cap"></div>
+                    <div class="pencil__cap-base"></div>
+                    <div class="pencil__middle"></div>
+                    <div class="pencil__eraser"></div>
+                </div>
+                <div class="line"></div>
+                <h2>Page Loading...Please Wait</h2>
+            </div>
+        </div>
+
+        <div id="main-content">
         <header class="navbar sticky-top flex-md-nowrap">
             <div class="col-md-3 col-lg-3 me-0 px-3 fs-6">
                 <a class="navbar-brand" href="index.html">
@@ -107,6 +120,7 @@
                 {% block content %}{% endblock %}
             </div>
         </div>
+        </div>
 
         <!-- JAVASCRIPT FILES -->
         <script src="{% static 'js/jquery.min.js' %}"></script>
@@ -114,6 +128,7 @@
         <script src="{% static 'js/apexcharts.min.js' %}"></script>
         <script src="{% static 'js/custom.js' %}"></script>
         <script src="{% static 'js/table-toggle.js' %}"></script>
+        <script src="{% static 'js/loading.js' %}"></script>
 
         <script type="text/javascript">
             var options = {
