@@ -11,20 +11,20 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/table-util.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/table-main.css' %}">
 
-    <div class="limiter">
-        <div class="container-table100">
-            <div class="wrap-table100">
-                <div class="table100">
-                    <table>
-                        <thead>
-                            {% block tbHead %} {% endblock %}
-                        </thead>
-                        <tbody>
-                            {% block tbBody %} {% endblock %}
-                        </tbody>
-                    </table>
+        <div class="limiter">
+            <div class="container-table100">
+                <div class="wrap-table100">
+                    <div class="table100">
+                        <table>
+                            <thead>
+                                {% block tbHead %} {% endblock %}
+                            </thead>
+                            <tbody>
+                                {% block tbBody %} {% endblock %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 {% endblock %}
