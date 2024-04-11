@@ -583,32 +583,6 @@ strong {
   z-index: 2;
 }
 
-.custom-block-balance::before {
-  content: "";
-  background: var(--custom-btn-bg-color);
-  background: #ff0000;
-  border-radius: 100%;
-  width: 200px;
-  height: 200px;
-  position: absolute;
-  top: -65px;
-  right: -25px;
-  transform: rotate(-25deg);
-}
-
-.custom-block-balance::after {
-  content: "";
-  background: var(--primary-color);
-  background: #ffa500;
-  border-radius: 100%;
-  width: 180px;
-  height: 180px;
-  position: absolute;
-  top: -75px;
-  right: -25px;
-  transform: rotate(-25deg);
-}
-
 .custom-block-edit-icon {
   background: var(--primary-color);
   border-radius: var(--border-radius-large);
