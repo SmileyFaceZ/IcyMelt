@@ -5,7 +5,7 @@ import datetime
 
 class IceExp(models.Model):
     """A model to represent ice experiment data."""
-    date = models.DateField(auto_now_add=datetime.date.today())
+    date = models.DateTimeField(default=datetime.datetime.now())
     temp = models.DecimalField(max_digits=5, decimal_places=2)
     humidity = models.DecimalField(max_digits=5, decimal_places=2)
     windspeed = models.DecimalField(max_digits=5, decimal_places=2)
