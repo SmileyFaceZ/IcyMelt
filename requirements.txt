@@ -2,3 +2,4 @@ django
 python-decouple
 python-dotenv
 psycopg2
+django-extensions
