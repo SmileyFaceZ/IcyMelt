@@ -4,6 +4,7 @@ from django.db.models import Avg
 from django.db.models import Count
 from django.contrib.postgres.aggregates import ArrayAgg
 from decimal import Decimal
+import requests
 
 
 class HomeView(TemplateView):
