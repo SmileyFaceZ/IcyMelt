@@ -4,6 +4,8 @@ from django.db.models import Avg
 from django.db.models import Count
 from django.contrib.postgres.aggregates import ArrayAgg
 from decimal import Decimal
+from rest_framework import generics
+from icymelt.serializers import IceExpSerializer
 import requests
 
 
@@ -92,3 +94,14 @@ class TableWeatherView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['weather'] = self.get_queryset()
         return context
+
+
+class IceExpListCreate(generics.ListCreateAPIView):
+    queryset = IceExp.objects.all()
+    serializer_class = IceExpSerializer
+
+
+class IceExpDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = IceExp.objects.all()
+    serializer_class = IceExpSerializer
+    lookup_field = 'pk'
