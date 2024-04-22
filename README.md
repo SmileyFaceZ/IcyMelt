@@ -12,7 +12,7 @@
 
 ### See the [Project Structure](project_structure.md) for more details.
 
-### See the [Project Setting](project_setting.md) to set up the project.
+### See the [Project Installation](project_installation.md) to set up the project.
 
 ### See the [API Reference](api_reference.md) document.
 
