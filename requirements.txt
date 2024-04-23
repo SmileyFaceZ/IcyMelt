@@ -3,3 +3,5 @@ python-decouple
 python-dotenv
 psycopg2
 django-extensions
+djangorestframework
+requests

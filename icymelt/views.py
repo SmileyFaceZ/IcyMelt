@@ -6,11 +6,40 @@ from django.contrib.postgres.aggregates import ArrayAgg
 from decimal import Decimal
 from rest_framework import generics
 from icymelt.serializers import IceExpSerializer
+from decouple import config
 import requests
 
 
+def get_current_weather():
+    url = 'https://api.weatherapi.com/v1/current.json'
+    params = {
+        'key': config('API_KEY'),
+        'q': 'Bangkok'
+    }
+    response = requests.get(url, params=params)
+    data = response.json()
+    return data
+
 class HomeView(TemplateView):
     template_name = "icymelt/home.html"
+    data = get_current_weather()
+
+    @staticmethod
+    def get_cur_temp():
+        return HomeView.data['current']['temp_c']
+
+    @staticmethod
+    def get_cur_rh():
+        return HomeView.data['current']['humidity']
+
+    @staticmethod
+    def get_cur_condition():
+        return HomeView.data['current']['condition']['text']
+
+    @staticmethod
+    def get_cur_wind():
+        return HomeView.data['current']['wind_kph']
+
 
     @staticmethod
     def get_pie_chart_data():
@@ -56,6 +85,11 @@ class HomeView(TemplateView):
 
         context['pie_label'], context['pie_data'] = self.get_pie_chart_data()
         context['series'], context['categories'] = self.get_line_plot_data()
+
+        context['cur_temp'] = self.get_cur_temp()
+        context['cur_rh'] = self.get_cur_rh()
+        context['cur_condition'] = self.get_cur_condition()
+        context['cur_wind'] = self.get_cur_wind()
 
         return context
 
