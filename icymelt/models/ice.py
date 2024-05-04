@@ -4,11 +4,11 @@ from icymelt.models.weather import WeatherCondition
 import datetime
 import requests
 
-api_key = "b4f5f50a74ae4670960162838242304"
+
 def get_current_weather():
     url = 'https://api.weatherapi.com/v1/current.json'
     params = {
-        'key': api_key,
+        'key': config('API_KEY'),
         'q': 'Bangkok'
     }
     response = requests.get(url, params=params)
