@@ -8,7 +8,7 @@ from rest_framework import generics
 from icymelt.serializers import IceExpSerializer
 from decouple import config
 import requests
-
+from collections import defaultdict, OrderedDict
 
 def get_current_weather():
     url = 'https://api.weatherapi.com/v1/current.json'
@@ -55,52 +55,65 @@ class HomeView(TemplateView):
 
         return labels, data
 
-    @staticmethod
-    def get_line_plot_data():
-        material_with_duration = IceExp.objects.values('material').annotate(
-            duration_list=ArrayAgg('duration')
-        )
-        print("material_with_duration: ", material_with_duration)
+    def group_ice_object(self, date_list):
+        ice_exp_by_date = defaultdict(list)
+        for ice_exp in IceExp.objects.filter(date__date__in=date_list):
+            ice_exp_by_date[ice_exp.date.date()].append(ice_exp)
+        return ice_exp_by_date
+
+    def get_series(self, materials, sorted_average_durations):
         series = []
-        for entry in material_with_duration:
-            _dict = {
-                'name': str(Material.objects.get(id=entry['material'])),
-                'data': [str(Decimal(str(value))) for value in
-                         entry['duration_list']]
-            }
-            series.append(_dict)
-        print("series: ", series, len(series))
+        for material in materials:
+            data = []
+            for date, durations in sorted_average_durations.items():
+                duration = durations[material]
+                if duration is None:
+                    duration = Decimal('0')
+                data.append(str(round(duration, 2)))
 
-        categories_obj = list(IceExp.objects.order_by('date').values_list('date', flat=True).distinct())
-        print('='*100)
-        categories = [dt.strftime('%Y-%m-%d %H:%M:%S') for dt in categories_obj]
-        print("categories: ", categories, len(categories))
+            series.append({'name': material.type, 'data': data})
+        return series
 
+    def get_average_duration_by_date(self, date_list, materials):
+        average_durations_by_date = defaultdict(dict)
+        ice_exp_by_date = self.group_ice_object(date_list)
+        for date, ice_exp_objects in ice_exp_by_date.items():
+            average_durations_for_date = {}
 
-        # categories = ['2024-05-04 11:08', '2024-05-04 11:09', '2024-05-04 11:10', '2024-05-04 11:11', '2024-05-04 11:12', '2024-05-04 11:13', '2024-05-04 11:14', '2024-05-04 11:15', '2024-05-04 11:16', '2024-05-04 11:17', '2024-05-04 11:18']
-        # series = [
-        #     {'name': 'Wood', 'data': ['2235.00', '0', '0', '0', '0', '0', '2000']},
-        #     {'name': 'Ground', 'data': ['517.00', '943.00', '676.00', '508.00', '437.00', '533.00', '329.00', '829.00', '713.00', '657.00', '439.00']},
-        #     {'name': 'Tile', 'data': ['905.00', '879.00', '773.00', '687.00', '868.00', '811.00', '876.00', '839.00', '556.00']},
-        #     {'name': 'Iron', 'data': ['245.00', '286.00', '350.00', '398.00', '271.00', '305.00', '230.00', '267.00', '288.00', '361.00']},
-        #     {'name': 'Plastic', 'data': ['1796.00']}
-        # ]
+            for material in materials:
+                ice_exp_objects_for_material = [exp for exp in ice_exp_objects
+                                                if exp.material == material]
 
-        # date_list = list(
-        #     IceExp.objects.order_by('date').values_list('date',
-        #                                                 flat=True).distinct())
-        # date_list = [dt.date() for dt in date_list]
-        # print("date_list: ", date_list)
-        # aaa = IceExp.objects.filter(material=1)
-        # print("objects: ", aaa)
-        # for i in aaa:
-        #     print("i: ", i.date)
-        #
-        # for date in date_list:
-        #     ice_exp_objects = IceExp.objects.filter(date=date)
-        #     print("ice_exp_objects: ", ice_exp_objects)
+                average_duration = None
+                if ice_exp_objects_for_material:
+                    average_duration = sum(exp.duration for exp in
+                                           ice_exp_objects_for_material) / len(
+                        ice_exp_objects_for_material)
+
+                average_durations_for_date[material] = average_duration
+
+            average_durations_by_date[date] = average_durations_for_date
+        return average_durations_by_date
 
 
+    def get_line_plot_data(self):
+        date_list = list(
+            IceExp.objects.order_by('date').values_list('date',
+                                                        flat=True).distinct())
+
+        materials = Material.objects.all()
+        average_durations_by_date = self.get_average_duration_by_date(date_list, materials)
+
+        sorted_average_durations = OrderedDict(
+            sorted(average_durations_by_date.items()))
+
+        materials = set(
+            material for durations in sorted_average_durations.values() for material
+            in durations.keys())
+
+        series = self.get_series(materials, sorted_average_durations)
+
+        categories = [date.strftime('%Y-%m-%d') for date in sorted_average_durations.keys()]
         return series, categories
 
     def get_context_data(self, **kwargs):
