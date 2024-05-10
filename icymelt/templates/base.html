@@ -109,7 +109,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="setting.html">
                                     <i class="bi-gear me-2"></i>
-                                    Settings
+                                    API Query
                                 </a>
                             </li>
 
@@ -177,7 +177,7 @@
                 stroke: {
                     show: true,
                     width: 3,  // Increase stroke width for better visibility
-                    colors: ['#008FFB', '#00E396', '#FEB019']
+                    colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0']
                 },
                 xaxis: {
                     categories: {{ categories|safe }},
@@ -193,7 +193,7 @@
                 tooltip: {
                     y: {
                         formatter: function(val) {
-                            return "$ " + val + " thousands"
+                            return val + " seconds"
                         }
                     }
                 }

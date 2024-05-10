@@ -1,6 +1,7 @@
 """This module contains the ice experiment model."""
 from django.db import models
 from icymelt.models.weather import WeatherCondition
+from decouple import config
 import datetime
 import requests
 
@@ -28,7 +29,7 @@ class IceExp(models.Model):
     thickness = models.DecimalField(max_digits=5, decimal_places=2)
     weight = models.DecimalField(max_digits=5, decimal_places=2)
     material = models.ForeignKey('Material', on_delete=models.CASCADE)
-    duration = models.DecimalField(max_digits=5, decimal_places=2)
+    duration = models.DecimalField(max_digits=9, decimal_places=2)
 
     def save(self, *args, **kwargs):
         if not self.weather_cond_id:

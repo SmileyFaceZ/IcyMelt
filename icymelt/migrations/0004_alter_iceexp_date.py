@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("icymelt", "0002_alter_iceexp_date"),
+        ("icymelt", "0003_alter_iceexp_date"),
     ]
 
     operations = [
@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             model_name="iceexp",
             name="date",
             field=models.DateTimeField(
-                default=datetime.datetime(2024, 5, 4, 21, 46, 14, 526407)
+                default=datetime.datetime(2024, 5, 4, 21, 46, 22, 764623)
             ),
         ),
     ]

@@ -60,7 +60,7 @@ class HomeView(TemplateView):
         material_with_duration = IceExp.objects.values('material').annotate(
             duration_list=ArrayAgg('duration')
         )
-
+        print("material_with_duration: ", material_with_duration)
         series = []
         for entry in material_with_duration:
             _dict = {
@@ -69,10 +69,37 @@ class HomeView(TemplateView):
                          entry['duration_list']]
             }
             series.append(_dict)
+        print("series: ", series, len(series))
 
         categories_obj = list(IceExp.objects.order_by('date').values_list('date', flat=True).distinct())
-        categories = [date_obj.date() for date_obj in categories_obj]
-        categories = [str(date) for date in categories]
+        print('='*100)
+        categories = [dt.strftime('%Y-%m-%d %H:%M:%S') for dt in categories_obj]
+        print("categories: ", categories, len(categories))
+
+
+        # categories = ['2024-05-04 11:08', '2024-05-04 11:09', '2024-05-04 11:10', '2024-05-04 11:11', '2024-05-04 11:12', '2024-05-04 11:13', '2024-05-04 11:14', '2024-05-04 11:15', '2024-05-04 11:16', '2024-05-04 11:17', '2024-05-04 11:18']
+        # series = [
+        #     {'name': 'Wood', 'data': ['2235.00', '0', '0', '0', '0', '0', '2000']},
+        #     {'name': 'Ground', 'data': ['517.00', '943.00', '676.00', '508.00', '437.00', '533.00', '329.00', '829.00', '713.00', '657.00', '439.00']},
+        #     {'name': 'Tile', 'data': ['905.00', '879.00', '773.00', '687.00', '868.00', '811.00', '876.00', '839.00', '556.00']},
+        #     {'name': 'Iron', 'data': ['245.00', '286.00', '350.00', '398.00', '271.00', '305.00', '230.00', '267.00', '288.00', '361.00']},
+        #     {'name': 'Plastic', 'data': ['1796.00']}
+        # ]
+
+        # date_list = list(
+        #     IceExp.objects.order_by('date').values_list('date',
+        #                                                 flat=True).distinct())
+        # date_list = [dt.date() for dt in date_list]
+        # print("date_list: ", date_list)
+        # aaa = IceExp.objects.filter(material=1)
+        # print("objects: ", aaa)
+        # for i in aaa:
+        #     print("i: ", i.date)
+        #
+        # for date in date_list:
+        #     ice_exp_objects = IceExp.objects.filter(date=date)
+        #     print("ice_exp_objects: ", ice_exp_objects)
+
 
         return series, categories
 
@@ -139,3 +166,13 @@ class IceExpDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = IceExp.objects.all()
     serializer_class = IceExpSerializer
     lookup_field = 'pk'
+
+
+# [
+#     {
+#         'name': 'Wood',
+#         'data': ['2235.00', '1512.00', '1990.00']
+#     },
+#     {
+#         'name': 'Ground',
+#         'data': ['517.00', '943.00', '676.00', '508.00', '437.00', '533.00', '329.00', '829.00', '713.00', '657.00', '439.00']}, {'name': 'Tile', 'data': ['905.00', '879.00', '773.00', '687.00', '868.00', '811.00', '876.00', '839.00', '556.00']}, {'name': 'Iron', 'data': ['245.00', '286.00', '350.00', '398.00', '271.00', '305.00', '230.00', '267.00', '288.00', '361.00']}, {'name': 'Plastic', 'data': ['1796.00']}]
