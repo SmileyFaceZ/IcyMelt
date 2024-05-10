@@ -5,7 +5,7 @@ from django.db.models import Count
 from django.contrib.postgres.aggregates import ArrayAgg
 from decimal import Decimal
 from rest_framework import generics
-from icymelt.serializers import IceExpSerializer
+from icymelt.serializers import IceExpSerializer, MaterialSerializer, WeatherConditionSerializer
 from decouple import config
 import requests
 from collections import defaultdict, OrderedDict
@@ -181,6 +181,25 @@ class IceExpDetail(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'pk'
 
 
+class MaterialListCreate(generics.ListCreateAPIView):
+    queryset = Material.objects.all()
+    serializer_class = MaterialSerializer
+
+
+class MaterialDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Material.objects.all()
+    serializer_class = MaterialSerializer
+    lookup_field = 'pk'
+
+class WeatherConditionListCreate(generics.ListCreateAPIView):
+    queryset = WeatherCondition.objects.all()
+    serializer_class = WeatherConditionSerializer
+
+
+class WeatherConditionDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = WeatherCondition.objects.all()
+    serializer_class = WeatherConditionSerializer
+    lookup_field = 'pk'
 # [
 #     {
 #         'name': 'Wood',
