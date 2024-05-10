@@ -162,7 +162,8 @@
                 series: {{ series|safe }},
                 chart: {
                     type: 'line',  // Change to line plot
-                    height: 350
+                    height: 500,
+                    width: '100%',
                 },
                 plotOptions: {
                     line: {  // Adjust plot options for line plot
@@ -172,11 +173,11 @@
                     }
                 },
                 dataLabels: {
-                    enabled: false
+                    enabled: true
                 },
                 stroke: {
                     show: true,
-                    width: 3,  // Increase stroke width for better visibility
+                    width: 5,  // Increase stroke width for better visibility
                     colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0']
                 },
                 xaxis: {

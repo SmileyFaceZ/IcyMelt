@@ -10,45 +10,42 @@
     <main class="main-wrapper col-md-9 ms-sm-auto py-4 col-lg-9 px-md-4 border-start">
         <div class="title-group mb-3">
             <h1 class="h2 mb-0">Overview</h1>
-
             <small class="text-muted">Analysis</small>
         </div>
 
         <div class="custom-block custom-block-balance">
             <h5 class="mb-4">Weather Forecast</h5>
             <div id="weatherapi-weather-widget-4"></div><script type='text/javascript' src='https://www.weatherapi.com/weather/widget.ashx?loc=2366981&wid=4&tu=2&div=weatherapi-weather-widget-4' async></script><noscript><a href="https://www.weatherapi.com/weather/q/bangkok" alt="Hour by hour Bangkok weather">10 day hour by hour Bangkok weather</a></noscript>
-            <div id="weatherapi-weather-widget-1"></div><script type='text/javascript' src='https://www.weatherapi.com/weather/widget.ashx?loc=2366981&wid=1&tu=2&div=weatherapi-weather-widget-1' async></script><noscript><a href="https://www.weatherapi.com/weather/q/bangkok-2366981" alt="Hour by hour Bangkok weather">10 day hour by hour Bangkok weather</a></noscript>
-            <div class="d-flex align-items-center border-bottom pb-3 mb-3">
 
-        <div class="row my-4">
-            <div class="col-lg-7 col-12">
-                <div class="custom-block bg-white">
-                    <h5 class="mb-4">History Material Usages</h5>
+            <br>
+            <h5 class="mb-4">Ice Duration Prediction</h5>
 
-                    <div id="pie-chart"></div>
+            <div>
+                <div class="col-lg-7 col-12">
+                    <div class="custom-block bg-white">
+                        <h5 class="mb-4">Material Usages</h5>
+                            <div id="pie-chart"></div>
+                    </div>
+
+                    <div class="custom-block bg-white" style="width: 65vw;">
+                        <h5 class="mb-4">Average Durations</h5>
+                        <div id="chart"></div>
+                    </div>
                 </div>
-
-                <div class="custom-block bg-white">
-                    <div id="chart"></div>
-                </div>
-            </div>
-
-            <div class="col-lg-5 col-12">
-                <div class="custom-block custom-block-exchange">
+                <div>
                     <h5 class="mb-4">Statistical Summary</h5>
+                        <div class="d-flex align-items-center border-bottom pb-3 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <p>Average Temperature</p>
+                                    <h6>(°C)</h6>
+                                </div>
+                            </div>
 
-                    <div class="d-flex align-items-center border-bottom pb-3 mb-3">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <p>Average Temperature</p>
-                                <h6>(°C)</h6>
+                            <div class="ms-auto me-4">
+                                <h6>{{ avg_temp }}</h6>
                             </div>
                         </div>
-
-                        <div class="ms-auto me-4">
-                            <h6>{{ avg_temp }}</h6>
-                        </div>
-                    </div>
 
                     <div class="d-flex align-items-center border-bottom pb-3 mb-3">
                         <div class="d-flex align-items-center">
