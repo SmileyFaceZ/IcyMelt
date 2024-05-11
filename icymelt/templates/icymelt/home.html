@@ -28,35 +28,44 @@
                     </div>
 
                     <div class="custom-block bg-white" style="width: 65vw;">
-                        <h5 class="mb-4">Average Durations</h5>
+                        <h5 class="mb-4">Average Ice Melting Durations</h5>
                         <div id="chart"></div>
                     </div>
                 </div>
                 <div>
-                    <h5 class="mb-4">Statistical Summary</h5>
+                    <div class="custom-block custom-block-exchange">
+                        <h5 class="mb-4">Statistical Summary</h5>
                         <div class="d-flex align-items-center border-bottom pb-3 mb-3">
                             <div class="d-flex align-items-center">
                                 <div>
-                                    <p>Average Temperature</p>
-                                    <h6>(°C)</h6>
+                                    <p>Temperature (°C)</p>
+                                    <h6>&emsp;&emsp;Average Temperature</h6>
+                                    <h6>&emsp;&emsp;Minimum Temperature</h6>
+                                    <h6>&emsp;&emsp;Maximum Temperature</h6>
                                 </div>
                             </div>
 
                             <div class="ms-auto me-4">
                                 <h6>{{ avg_temp }}</h6>
+                                <h6>{{ min_temp }}</h6>
+                                <h6>{{ max_temp }}</h6>
                             </div>
                         </div>
-
-                    <div class="d-flex align-items-center border-bottom pb-3 mb-3">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <p>Average Humidity</p>
-                                <h6>(%)</h6>
+                        <div class="d-flex align-items-center border-bottom pb-3 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <p>Relative Humidity (%)</p>
+                                    <h6>&emsp;&emsp;Average Humidity</h6>
+                                    <h6>&emsp;&emsp;Minimum Humidity</h6>
+                                    <h6>&emsp;&emsp;Maximum Humidity</h6>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="ms-auto me-4">
-                            <h6>{{ avg_rh }}</h6>
+                            <div class="ms-auto me-4">
+                                <h6>{{ avg_rh }}</h6>
+                                <h6>{{ min_rh }}</h6>
+                                <h6>{{ max_rh }}</h6>
+                            </div>
                         </div>
                     </div>
                 </div>
