@@ -1,14 +1,15 @@
 from django.views.generic import TemplateView
 from icymelt.models import IceExp, Material, WeatherCondition
-from django.db.models import Avg
-from django.db.models import Count
-from django.contrib.postgres.aggregates import ArrayAgg
 from decimal import Decimal
 from rest_framework import generics
 from icymelt.serializers import IceExpSerializer, MaterialSerializer, WeatherConditionSerializer
 from decouple import config
 import requests
 from collections import defaultdict, OrderedDict
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.db.models import Avg, Sum, Min, Max, Count
+
 
 def get_current_weather():
     url = 'https://api.weatherapi.com/v1/current.json'
@@ -19,6 +20,7 @@ def get_current_weather():
     response = requests.get(url, params=params)
     data = response.json()
     return data
+
 
 class HomeView(TemplateView):
     template_name = "icymelt/home.html"
@@ -39,7 +41,6 @@ class HomeView(TemplateView):
     @staticmethod
     def get_cur_wind():
         return HomeView.data['current']['wind_kph']
-
 
     @staticmethod
     def get_pie_chart_data():
@@ -94,7 +95,6 @@ class HomeView(TemplateView):
 
             average_durations_by_date[date] = average_durations_for_date
         return average_durations_by_date
-
 
     def get_line_plot_data(self):
         date_list = list(
@@ -191,6 +191,7 @@ class MaterialDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = MaterialSerializer
     lookup_field = 'pk'
 
+
 class WeatherConditionListCreate(generics.ListCreateAPIView):
     queryset = WeatherCondition.objects.all()
     serializer_class = WeatherConditionSerializer
@@ -200,11 +201,213 @@ class WeatherConditionDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = WeatherCondition.objects.all()
     serializer_class = WeatherConditionSerializer
     lookup_field = 'pk'
-# [
-#     {
-#         'name': 'Wood',
-#         'data': ['2235.00', '1512.00', '1990.00']
-#     },
-#     {
-#         'name': 'Ground',
-#         'data': ['517.00', '943.00', '676.00', '508.00', '437.00', '533.00', '329.00', '829.00', '713.00', '657.00', '439.00']}, {'name': 'Tile', 'data': ['905.00', '879.00', '773.00', '687.00', '868.00', '811.00', '876.00', '839.00', '556.00']}, {'name': 'Iron', 'data': ['245.00', '286.00', '350.00', '398.00', '271.00', '305.00', '230.00', '267.00', '288.00', '361.00']}, {'name': 'Plastic', 'data': ['1796.00']}]
+
+
+class ExperimentByMaterial(generics.ListAPIView):
+    serializer_class = IceExpSerializer
+
+    def get_queryset(self):
+        mat_id = self.kwargs['mat_id']
+        return IceExp.objects.filter(material_id=mat_id)
+
+
+class ExperimentByWeatherCondition(generics.ListAPIView):
+    serializer_class = IceExpSerializer
+
+    def get_queryset(self):
+        id = self.kwargs['id']
+        return IceExp.objects.filter(weather_cond_id=id)
+
+
+class ExperimentByMaterialAndWeatherCondition(generics.ListAPIView):
+    serializer_class = IceExpSerializer
+
+    def get_queryset(self):
+        mat_id = self.kwargs['mat_id']
+        wea_id = self.kwargs['wea_id']
+        return IceExp.objects.filter(material_id=mat_id, weather_cond_id=wea_id)
+
+
+class AverageAllMeasurements(APIView):
+    def get(self, request):
+        materials = IceExp.objects.values_list('material', flat=True).distinct()
+        avg_data = {}
+
+        for material_id in materials:
+            material_data = IceExp.objects.filter(material=material_id).aggregate(
+                avg_temp=Avg('temp'),
+                avg_humidity=Avg('humidity'),
+                avg_thickness=Avg('thickness'),
+                avg_weight=Avg('weight'),
+                avg_duration=Avg('duration')
+            )
+            record_count = IceExp.objects.filter(material=material_id).count()
+            material_type = Material.objects.get(pk=material_id).type
+            avg_data[material_id] = {
+                'material_id': material_id,
+                'material_type': material_type,
+                'record_count': record_count,
+                'temp': material_data['avg_temp'],
+                'humidity': material_data['avg_humidity'],
+                'thickness': material_data['avg_thickness'],
+                'weight': material_data['avg_weight'],
+                'duration': material_data['avg_duration']
+            }
+
+        return Response({'average': avg_data})
+
+
+class TotalAllMeasurements(APIView):
+    def get(self, request):
+        materials = IceExp.objects.values_list('material', flat=True).distinct()
+        total_data = {}
+
+        for material_id in materials:
+            material_data = IceExp.objects.filter(material=material_id).aggregate(
+                total_temp=Sum('temp'),
+                total_humidity=Sum('humidity'),
+                total_thickness=Sum('thickness'),
+                total_weight=Sum('weight'),
+                total_duration=Sum('duration')
+            )
+            record_count = IceExp.objects.filter(material=material_id).count()
+            material_type = Material.objects.get(pk=material_id).type
+            total_data[material_id] = {
+                'material_id': material_id,
+                'material_type': material_type,
+                'record_count': record_count,
+                'temp': material_data['total_temp'],
+                'humidity': material_data['total_humidity'],
+                'thickness': material_data['total_thickness'],
+                'weight': material_data['total_weight'],
+                'duration': material_data['total_duration']
+            }
+
+        return Response({'total': total_data})
+
+
+class MinAllMeasurements(APIView):
+    def get(self, request):
+        materials = IceExp.objects.values_list('material', flat=True).distinct()
+        min_data = {}
+
+        for material_id in materials:
+            material_data = IceExp.objects.filter(material=material_id).aggregate(
+                min_temp=Min('temp'),
+                min_humidity=Min('humidity'),
+                min_thickness=Min('thickness'),
+                min_weight=Min('weight'),
+                min_duration=Min('duration')
+            )
+            record_count = IceExp.objects.filter(material=material_id).count()
+            material_type = Material.objects.get(pk=material_id).type
+            min_data[material_id] = {
+                'material_id': material_id,
+                'material_type': material_type,
+                'record_count': record_count,
+                'temp': material_data['min_temp'],
+                'humidity': material_data['min_humidity'],
+                'thickness': material_data['min_thickness'],
+                'weight': material_data['min_weight'],
+                'duration': material_data['min_duration']
+            }
+
+        return Response({'min': min_data})
+
+
+class MaxAllMeasurements(APIView):
+    def get(self, request):
+        materials = IceExp.objects.values_list('material', flat=True).distinct()
+        max_data = {}
+
+        for material_id in materials:
+            material_data = IceExp.objects.filter(material=material_id).aggregate(
+                max_temp=Max('temp'),
+                max_humidity=Max('humidity'),
+                max_thickness=Max('thickness'),
+                max_weight=Max('weight'),
+                max_duration=Max('duration')
+            )
+            record_count = IceExp.objects.filter(material=material_id).count()
+            material_type = Material.objects.get(pk=material_id).type
+            max_data[material_id] = {
+                'material_id': material_id,
+                'material_type': material_type,
+                'record_count': record_count,
+                'temp': material_data['max_temp'],
+                'humidity': material_data['max_humidity'],
+                'thickness': material_data['max_thickness'],
+                'weight': material_data['max_weight'],
+                'duration': material_data['max_duration']
+            }
+
+        return Response({'max': max_data})
+
+
+class StatisticalAllMeasurements(APIView):
+    def get(self, request):
+        materials = IceExp.objects.values_list('material', flat=True).distinct()
+        stats_data = {}
+
+        for material_id in materials:
+            material_data = IceExp.objects.filter(material=material_id).aggregate(
+                avg_temp=Avg('temp'),
+                min_temp=Min('temp'),
+                max_temp=Max('temp'),
+                total_temp=Sum('temp'),
+                avg_humidity=Avg('humidity'),
+                min_humidity=Min('humidity'),
+                max_humidity=Max('humidity'),
+                total_humidity=Sum('humidity'),
+                avg_thickness=Avg('thickness'),
+                min_thickness=Min('thickness'),
+                max_thickness=Max('thickness'),
+                total_thickness=Sum('thickness'),
+                avg_weight=Avg('weight'),
+                min_weight=Min('weight'),
+                max_weight=Max('weight'),
+                total_weight=Sum('weight'),
+                avg_duration=Avg('duration'),
+                min_duration=Min('duration'),
+                max_duration=Max('duration'),
+                total_duration=Sum('duration'),
+            )
+            record_count = IceExp.objects.filter(material=material_id).count()
+            material_type = Material.objects.get(pk=material_id).type
+            stats_data[material_id] = {
+                'material_id': material_id,
+                'material_type': material_type,
+                'record_count': record_count,
+                'temp': {
+                    'mean': material_data['avg_temp'],
+                    'min': material_data['min_temp'],
+                    'max': material_data['max_temp'],
+                    'total': material_data['total_temp']
+                },
+                'humidity': {
+                    'mean': material_data['avg_humidity'],
+                    'min': material_data['min_humidity'],
+                    'max': material_data['max_humidity'],
+                    'total': material_data['total_humidity']
+                },
+                'thickness': {
+                    'mean': material_data['avg_thickness'],
+                    'min': material_data['min_thickness'],
+                    'max': material_data['max_thickness'],
+                    'total': material_data['total_thickness']
+                },
+                'weight': {
+                    'mean': material_data['avg_weight'],
+                    'min': material_data['min_weight'],
+                    'max': material_data['max_weight'],
+                    'total': material_data['total_weight']
+                },
+                'duration': {
+                    'mean': material_data['avg_duration'],
+                    'min': material_data['min_duration'],
+                    'max': material_data['max_duration'],
+                    'total': material_data['total_duration']
+                }
+            }
+
+        return Response(stats_data)
