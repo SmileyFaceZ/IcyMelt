@@ -157,6 +157,18 @@ class HomeView(TemplateView):
         context['min_rh'] = self.get_min_data('humidity')
         context['max_rh'] = self.get_max_data('humidity')
 
+        context['avg_thickness'] = self.get_average_data('thickness')
+        context['min_thickness'] = self.get_min_data('thickness')
+        context['max_thickness'] = self.get_max_data('thickness')
+
+        context['avg_weight'] = self.get_average_data('weight')
+        context['min_weight'] = self.get_min_data('weight')
+        context['max_weight'] = self.get_max_data('weight')
+
+        context['avg_duration'] = self.get_average_data('duration')
+        context['min_duration'] = self.get_min_data('duration')
+        context['max_duration'] = self.get_max_data('duration')
+
         context['pie_label'], context['pie_data'] = self.get_pie_chart_data()
         context['series'], context['categories'] = self.get_line_plot_data()
 
