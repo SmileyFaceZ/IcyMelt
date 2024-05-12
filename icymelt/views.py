@@ -9,6 +9,9 @@ from collections import defaultdict, OrderedDict
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import Avg, Sum, Min, Max, Count
+from django.urls import get_resolver, get_mod_func
+from django.shortcuts import render
+from . import urls
 
 
 def get_current_weather():
@@ -411,3 +414,42 @@ class StatisticalAllMeasurements(APIView):
             }
 
         return Response(stats_data)
+
+
+def get_api_paths(urlconf_module):
+    resolver = get_resolver(urlconf_module)
+    api_paths = {}
+
+    # Get the URL patterns from the resolver
+    url_patterns = resolver.url_patterns
+
+    # Iterate over the URL patterns to find API paths
+    for pattern in url_patterns:
+        if hasattr(pattern, 'pattern'):
+            # Access the pattern attribute to get the URLPattern object
+            if pattern.name.endswith('_api'):
+                url_pattern = pattern.pattern
+                api_paths[pattern.name] = url_pattern
+
+    return api_paths
+
+
+def api_paths_view(request):
+    api_paths = get_api_paths(urls)
+    data = {
+        "ice_exp_api": {"url": api_paths["ice_exp_api"], "description": "List all ice experiments"},
+        "ice_exp_detail_api": {"url": api_paths["ice_exp_detail_api"], "description": "Retrieve an ice experiment with a specific id"},
+        "experiment_by_material_api": {"url": api_paths["experiment_by_material_api"], "description": "List all ice experiments with a specific material"},
+        "experiment_by_weather_condition_api": {"url": api_paths["experiment_by_weather_condition_api"], "description": "List all ice experiments with a specific weather condition"},
+        "experiment_by_material_and_weather_condition_api": {"url": api_paths["experiment_by_material_and_weather_condition_api"], "description": "List all ice experiments with a specific material and weather condition"},
+        "material_api": {"url": api_paths["material_api"], "description": "List all materials"},
+        "material_detail_api": {"url": api_paths["material_detail_api"], "description": "Retrieve a material with a specific id"},
+        "weather_api": {"url": api_paths["weather_api"], "description": "List all weather conditions"},
+        "weather_condition_detail_api": {"url": api_paths["weather_condition_detail_api"], "description": "Retrieve a weather condition with a specific id"},
+        "average_all_measurements_api": {"url": api_paths["average_all_measurements_api"], "description": "Get average values for all measurements"},
+        "total_all_measurements_api": {"url": api_paths["total_all_measurements_api"], "description": "Get total values for all measurements"},
+        "min_all_measurements_api": {"url": api_paths["min_all_measurements_api"], "description": "Get minimum values for all measurements"},
+        "max_all_measurements_api": {"url": api_paths["max_all_measurements_api"], "description": "Get maximum values for all measurements"},
+        "statistical_all_measurements_api": {"url": api_paths["statistical_all_measurements_api"], "description": "Get statistical values for all measurements"}
+    }
+    return render(request, 'icymelt/api_paths_template.html', {'api_paths': data})
