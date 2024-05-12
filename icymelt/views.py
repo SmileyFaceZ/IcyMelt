@@ -1,6 +1,4 @@
 from django.views.generic import TemplateView
-from django.db.models import Avg, Sum, Min, Max, Count
-from django.contrib.postgres.aggregates import ArrayAgg
 from decouple import config
 from decimal import Decimal
 from icymelt.serializers import IceExpSerializer, MaterialSerializer, WeatherConditionSerializer
@@ -9,14 +7,11 @@ from rest_framework import generics
 from collections import defaultdict, OrderedDict
 from rest_framework.response import Response
 from rest_framework.views import APIView
-<<<<<<< HEAD
 from django.db.models import Avg, Sum, Min, Max, Count
-from django.urls import get_resolver, get_mod_func
+from django.urls import get_resolver
 from django.shortcuts import render
 from . import urls
-=======
 import requests
->>>>>>> 9d1260efd4547f3c94d26f726cb6798ed6938c83
 
 
 def get_current_weather():
