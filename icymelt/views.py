@@ -132,7 +132,7 @@ class HomeView(TemplateView):
         data = round(data, 2)
         return data
 
-    def get_scatter_plot_data(self):
+    def get_scatter_plot_data(self, field_name):
         data = []
         for material in Material.objects.all():
             mat = {
@@ -140,10 +140,11 @@ class HomeView(TemplateView):
                 'data': []
             }
             for ice_exp in IceExp.objects.filter(material=material):
-                mat['data'].append([float(ice_exp.temp), int(ice_exp.duration), float(ice_exp.weight)])
+                mat['data'].append([float(getattr(ice_exp, field_name)),
+                                    int(ice_exp.duration),
+                                    float(ice_exp.weight)])
             data.append(mat)
 
-        # print(data)
         return data
 
     def get_context_data(self, **kwargs):
@@ -159,7 +160,9 @@ class HomeView(TemplateView):
         context['pie_label'], context['pie_data'] = self.get_pie_chart_data()
         context['series'], context['categories'] = self.get_line_plot_data()
 
-        context['scatter_data'] = self.get_scatter_plot_data()
+        context['scatter_temp_data'] = self.get_scatter_plot_data('temp')
+        context['scatter_rh_data'] = self.get_scatter_plot_data('humidity')
+        context['scatter_thickness_data'] = self.get_scatter_plot_data('thickness')
 
         return context
 

@@ -34,7 +34,17 @@
 
                     <div class="custom-block bg-white" style="width: 65vw;">
                         <h5 class="mb-4">Scatter Plot with Temperature and Durations</h5>
-                        <div id="scatter-chart"></div>
+                        <div id="scatter-temp-chart"></div>
+                    </div>
+
+                    <div class="custom-block bg-white" style="width: 65vw;">
+                        <h5 class="mb-4">Scatter Plot with Relative Humidity and Durations</h5>
+                        <div id="scatter-rh-chart"></div>
+                    </div>
+
+                    <div class="custom-block bg-white" style="width: 65vw;">
+                        <h5 class="mb-4">Scatter Plot with Relative Thickness and Durations</h5>
+                        <div id="scatter-thick-chart"></div>
                     </div>
                 </div>
                 <div>
@@ -115,15 +125,16 @@
         </script>
 
         <script type="text/javascript">
+            var data = {{ series|safe }};
             var options = {
-                series: {{ series|safe }},
+                series: data,
                 chart: {
-                    type: 'line',  // Change to line plot
+                    type: 'line',
                     height: 500,
                     width: '100%',
                 },
                 plotOptions: {
-                    line: {  // Adjust plot options for line plot
+                    line: {
                         markers: {
                             size: 6
                         }
@@ -161,68 +172,203 @@
             chart.render();
         </script>
 
-<script type="text/javascript">
-    var data = {{ scatter_data|safe }};
+        <script type="text/javascript">
+            var data = {{ scatter_temp_data|safe }};
 
-    var options = {
-        series: data.map((group) => ({
-            name: group.name,
-            data: group.data.map(([x, y, weight]) => ({
-                x: x,
-                y: y,
-                z: weight
-            }))
-        })),
-        chart: {
-            height: 350,
-            type: 'scatter',
-            zoom: {
-                enabled: true,
-                type: 'xy'
-            }
-        },
-        xaxis: {
-            tickAmount: 10,
-            title: {
-                text: 'Temperature (°C)'
-            },
-            labels: {
-                formatter: function(val) {
-                    return val.toFixed(0);
+            var options = {
+                series: data.map((group) => ({
+                    name: group.name,
+                    data: group.data.map(([x, y, weight]) => ({
+                        x: x,
+                        y: y,
+                        z: weight
+                    }))
+                })),
+                chart: {
+                    height: 350,
+                    type: 'scatter',
+                    zoom: {
+                        enabled: true,
+                        type: 'xy'
+                    }
+                },
+                xaxis: {
+                    tickAmount: 12,
+                    title: {
+                        text: 'Temperature (°C)'
+                    },
+                    labels: {
+                        formatter: function(val) {
+                            return val.toFixed(1);
+                        }
+                    }
+                },
+                yaxis: {
+                    // tickAmount: 10,
+                    title: {
+                        text: 'Durations (s)'
+                    },
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return val + " seconds";
+                        }
+                    },
+                    z: {
+                        formatter: function(val) {
+                            return val + " g";
+                        }
+                    },
+                },
+                markers: {
+                    size: 6
                 }
-            }
-        },
-        yaxis: {
-            tickAmount: 10,
-            title: {
-                text: 'Durations (s)'
-            },
-        },
-        tooltip: {
-            y: {
-                formatter: function(val) {
-                    return val + " seconds";
-                }
-            },
-            z: {
-                formatter: function(val) {
-                    return val + " g";
-                }
-            },
-            x: {
-                formatter: function(val) {
-                    return val + "°C";
-                }
-            }
-        },
-        markers: {
-            size: 6
-        }
-    };
+            };
 
-    var chart = new ApexCharts(document.querySelector("#scatter-chart"), options);
-    chart.render();
-</script>
+            var chart = new ApexCharts(document.querySelector("#scatter-temp-chart"), options);
+            chart.render();
+        </script>
+
+        <script type="text/javascript">
+            var data = {{ scatter_rh_data|safe }};
+
+            data.forEach(group => {
+                group.data.forEach((point, index) => {
+                    point[0] += index * 0.000001;
+                });
+            });
+
+            var options = {
+                series: data.map((group) => ({
+                    name: group.name,
+                    data: group.data.map(([x, y, weight]) => ({
+                        x: x,
+                        y: y,
+                        z: weight
+                    }))
+                })),
+                chart: {
+                    height: 350,
+                    type: 'scatter',
+                    zoom: {
+                        enabled: true,
+                        type: 'xy'
+                    }
+                },
+                xaxis: {
+                    tickAmount: 10,
+                    title: {
+                        text: 'Relative Humidity (%)'
+                    },
+                    labels: {
+                        formatter: function(val) {
+                            if (typeof val === 'number' && !isNaN(val)) {
+                                return val.toFixed(1);
+                            } else if (typeof val === 'undefined') {
+                                return "";
+                            } else {
+                                return val;
+                            }
+                        }
+                    }
+                },
+                yaxis: {
+                    tickAmount: 10,
+                    title: {
+                        text: 'Durations (s)'
+                    },
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return val + " seconds";
+                        }
+                    },
+                    z: {
+                        formatter: function(val) {
+                            return val + " g";
+                        }
+                    },
+                },
+                markers: {
+                    size: 6
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#scatter-rh-chart"), options);
+            chart.render();
+        </script>
+
+        <script type="text/javascript">
+            var data = {{ scatter_thickness_data|safe }};
+
+            data.forEach(group => {
+                group.data.forEach((point, index) => {
+                    point[0] += index * 0.000001;
+                });
+            });
+
+            var options = {
+                series: data.map((group) => ({
+                    name: group.name,
+                    data: group.data.map(([x, y, weight]) => ({
+                        x: x,
+                        y: y,
+                        z: weight
+                    }))
+                })),
+                chart: {
+                    height: 350,
+                    type: 'scatter',
+                    zoom: {
+                        enabled: true,
+                        type: 'xy'
+                    }
+                },
+                xaxis: {
+                    tickAmount: 10,
+                    title: {
+                        text: 'Thickness (cm)'
+                    },
+                    labels: {
+                        formatter: function(val) {
+                            if (typeof val === 'number' && !isNaN(val)) {
+                                return val.toFixed(1);
+                            } else if (typeof val === 'undefined') {
+                                return "";
+                            } else {
+                                return val;
+                            }
+                        }
+                    }
+                },
+                yaxis: {
+                    tickAmount: 10,
+                    title: {
+                        text: 'Durations (s)'
+                    },
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return val + " seconds";
+                        }
+                    },
+                    z: {
+                        formatter: function(val) {
+                            return val + " g";
+                        }
+                    },
+                },
+                markers: {
+                    size: 6
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#scatter-thick-chart"), options);
+            chart.render();
+        </script>
 
 {% endblock %}
 
