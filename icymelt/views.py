@@ -132,10 +132,23 @@ class HomeView(TemplateView):
         data = round(data, 2)
         return data
 
+    def get_scatter_plot_data(self, field_name):
+        data = []
+        for material in Material.objects.all():
+            mat = {
+                'name': material.type,
+                'data': []
+            }
+            for ice_exp in IceExp.objects.filter(material=material):
+                mat['data'].append([float(getattr(ice_exp, field_name)),
+                                    int(ice_exp.duration),
+                                    float(ice_exp.weight)])
+            data.append(mat)
+
+        return data
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print('data:', self.get_average_data('temp'))
         context['avg_temp'] = self.get_average_data('temp')
         context['min_temp'] = self.get_min_data('temp')
         context['max_temp'] = self.get_max_data('temp')
@@ -144,8 +157,24 @@ class HomeView(TemplateView):
         context['min_rh'] = self.get_min_data('humidity')
         context['max_rh'] = self.get_max_data('humidity')
 
+        context['avg_thickness'] = self.get_average_data('thickness')
+        context['min_thickness'] = self.get_min_data('thickness')
+        context['max_thickness'] = self.get_max_data('thickness')
+
+        context['avg_weight'] = self.get_average_data('weight')
+        context['min_weight'] = self.get_min_data('weight')
+        context['max_weight'] = self.get_max_data('weight')
+
+        context['avg_duration'] = self.get_average_data('duration')
+        context['min_duration'] = self.get_min_data('duration')
+        context['max_duration'] = self.get_max_data('duration')
+
         context['pie_label'], context['pie_data'] = self.get_pie_chart_data()
         context['series'], context['categories'] = self.get_line_plot_data()
+
+        context['scatter_temp_data'] = self.get_scatter_plot_data('temp')
+        context['scatter_rh_data'] = self.get_scatter_plot_data('humidity')
+        context['scatter_thickness_data'] = self.get_scatter_plot_data('thickness')
 
         return context
 
