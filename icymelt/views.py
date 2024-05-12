@@ -12,6 +12,7 @@ from django.urls import get_resolver
 from django.shortcuts import render
 from . import urls
 import requests
+from rest_framework.exceptions import MethodNotAllowed
 
 
 def get_current_weather():
@@ -217,40 +218,53 @@ class TableWeatherView(TemplateView):
         return context
 
 
-class IceExpListCreate(generics.ListCreateAPIView):
+class ReadOnlyListView(generics.GenericAPIView):
+    def create(self, request, *args, **kwargs):
+        raise MethodNotAllowed('POST')
+
+    def update(self, request, *args, **kwargs):
+        raise MethodNotAllowed('PUT')
+
+    def partial_update(self, request, *args, **kwargs):
+        raise MethodNotAllowed('PATCH')
+
+    def destroy(self, request, *args, **kwargs):
+        raise MethodNotAllowed('DELETE')
+
+class IceExpListCreate(ReadOnlyListView, generics.ListAPIView):
     queryset = IceExp.objects.all()
     serializer_class = IceExpSerializer
 
 
-class IceExpDetail(generics.RetrieveUpdateDestroyAPIView):
+class IceExpDetail(ReadOnlyListView, generics.RetrieveAPIView):
     queryset = IceExp.objects.all()
     serializer_class = IceExpSerializer
-    lookup_field = 'pk'
+    lookup_field = 'id'
 
 
-class MaterialListCreate(generics.ListCreateAPIView):
+class MaterialListCreate(ReadOnlyListView, generics.ListAPIView):
     queryset = Material.objects.all()
     serializer_class = MaterialSerializer
 
 
-class MaterialDetail(generics.RetrieveUpdateDestroyAPIView):
+class MaterialDetail(ReadOnlyListView, generics.RetrieveAPIView):
     queryset = Material.objects.all()
     serializer_class = MaterialSerializer
-    lookup_field = 'pk'
+    lookup_field = 'id'
 
 
-class WeatherConditionListCreate(generics.ListCreateAPIView):
+class WeatherConditionListCreate(ReadOnlyListView, generics.ListAPIView):
     queryset = WeatherCondition.objects.all()
     serializer_class = WeatherConditionSerializer
 
 
-class WeatherConditionDetail(generics.RetrieveUpdateDestroyAPIView):
+class WeatherConditionDetail(ReadOnlyListView, generics.RetrieveAPIView):
     queryset = WeatherCondition.objects.all()
     serializer_class = WeatherConditionSerializer
-    lookup_field = 'pk'
+    lookup_field = 'id'
 
 
-class ExperimentByMaterial(generics.ListAPIView):
+class ExperimentByMaterial(ReadOnlyListView, generics.ListAPIView):
     serializer_class = IceExpSerializer
 
     def get_queryset(self):
@@ -258,7 +272,7 @@ class ExperimentByMaterial(generics.ListAPIView):
         return IceExp.objects.filter(material_id=mat_id)
 
 
-class ExperimentByWeatherCondition(generics.ListAPIView):
+class ExperimentByWeatherCondition(ReadOnlyListView, generics.ListAPIView):
     serializer_class = IceExpSerializer
 
     def get_queryset(self):
@@ -266,7 +280,7 @@ class ExperimentByWeatherCondition(generics.ListAPIView):
         return IceExp.objects.filter(weather_cond_id=id)
 
 
-class ExperimentByMaterialAndWeatherCondition(generics.ListAPIView):
+class ExperimentByMaterialAndWeatherCondition(ReadOnlyListView, generics.ListAPIView):
     serializer_class = IceExpSerializer
 
     def get_queryset(self):
@@ -275,7 +289,7 @@ class ExperimentByMaterialAndWeatherCondition(generics.ListAPIView):
         return IceExp.objects.filter(material_id=mat_id, weather_cond_id=wea_id)
 
 
-class AverageAllMeasurements(APIView):
+class AverageAllMeasurements(ReadOnlyListView, APIView):
     def get(self, request):
         materials = IceExp.objects.values_list('material', flat=True).distinct()
         avg_data = {}
@@ -304,7 +318,7 @@ class AverageAllMeasurements(APIView):
         return Response({'average': avg_data})
 
 
-class TotalAllMeasurements(APIView):
+class TotalAllMeasurements(ReadOnlyListView, APIView):
     def get(self, request):
         materials = IceExp.objects.values_list('material', flat=True).distinct()
         total_data = {}
@@ -333,7 +347,7 @@ class TotalAllMeasurements(APIView):
         return Response({'total': total_data})
 
 
-class MinAllMeasurements(APIView):
+class MinAllMeasurements(ReadOnlyListView, APIView):
     def get(self, request):
         materials = IceExp.objects.values_list('material', flat=True).distinct()
         min_data = {}
@@ -362,7 +376,7 @@ class MinAllMeasurements(APIView):
         return Response({'min': min_data})
 
 
-class MaxAllMeasurements(APIView):
+class MaxAllMeasurements(ReadOnlyListView, APIView):
     def get(self, request):
         materials = IceExp.objects.values_list('material', flat=True).distinct()
         max_data = {}
@@ -391,7 +405,7 @@ class MaxAllMeasurements(APIView):
         return Response({'max': max_data})
 
 
-class StatisticalAllMeasurements(APIView):
+class StatisticalAllMeasurements(ReadOnlyListView, APIView):
     def get(self, request):
         materials = IceExp.objects.values_list('material', flat=True).distinct()
         stats_data = {}
@@ -481,19 +495,19 @@ def get_api_paths(urlconf_module):
 def api_paths_view(request):
     api_paths = get_api_paths(urls)
     data = {
-        "ice_exp_api": {"url": api_paths["ice_exp_api"], "description": "List all ice experiments"},
-        "ice_exp_detail_api": {"url": api_paths["ice_exp_detail_api"], "description": "Retrieve an ice experiment with a specific id"},
-        "experiment_by_material_api": {"url": api_paths["experiment_by_material_api"], "description": "List all ice experiments with a specific material"},
-        "experiment_by_weather_condition_api": {"url": api_paths["experiment_by_weather_condition_api"], "description": "List all ice experiments with a specific weather condition"},
-        "experiment_by_material_and_weather_condition_api": {"url": api_paths["experiment_by_material_and_weather_condition_api"], "description": "List all ice experiments with a specific material and weather condition"},
-        "material_api": {"url": api_paths["material_api"], "description": "List all materials"},
-        "material_detail_api": {"url": api_paths["material_detail_api"], "description": "Retrieve a material with a specific id"},
-        "weather_api": {"url": api_paths["weather_api"], "description": "List all weather conditions"},
+        "ice_exp_api": {"url": str(api_paths["ice_exp_api"])[4:], "description": "List all ice experiments"},
+        "ice_exp_detail_api": {"url": str(api_paths["ice_exp_detail_api"])[4:], "description": "Retrieve an ice experiment with a specific id"},
+        "experiment_by_material_api": {"url": str(api_paths["experiment_by_material_api"])[4:], "description": "List all ice experiments with a specific material"},
+        "experiment_by_weather_condition_api": {"url": str(api_paths["experiment_by_weather_condition_api"])[4:], "description": "List all ice experiments with a specific weather condition"},
+        "experiment_by_material_and_weather_condition_api": {"url": str(api_paths["experiment_by_material_and_weather_condition_api"])[4:], "description": "List all ice experiments with a specific material and weather condition"},
+        "material_api": {"url": str(api_paths["material_api"])[4:], "description": "List all materials"},
+        "material_detail_api": {"url": str(api_paths["material_detail_api"])[4:], "description": "Retrieve a material with a specific id"},
+        "weather_api": {"url": str(api_paths["weather_api"])[4:], "description": "List all weather conditions"},
         "weather_condition_detail_api": {"url": api_paths["weather_condition_detail_api"], "description": "Retrieve a weather condition with a specific id"},
-        "average_all_measurements_api": {"url": api_paths["average_all_measurements_api"], "description": "Get average values for all measurements"},
-        "total_all_measurements_api": {"url": api_paths["total_all_measurements_api"], "description": "Get total values for all measurements"},
-        "min_all_measurements_api": {"url": api_paths["min_all_measurements_api"], "description": "Get minimum values for all measurements"},
-        "max_all_measurements_api": {"url": api_paths["max_all_measurements_api"], "description": "Get maximum values for all measurements"},
-        "statistical_all_measurements_api": {"url": api_paths["statistical_all_measurements_api"], "description": "Get statistical values for all measurements"}
+        "average_all_measurements_api": {"url": str(api_paths["average_all_measurements_api"])[4:], "description": "Get average values for all measurements"},
+        "total_all_measurements_api": {"url": str(api_paths["total_all_measurements_api"])[4:], "description": "Get total values for all measurements"},
+        "min_all_measurements_api": {"url": str(api_paths["min_all_measurements_api"])[4:], "description": "Get minimum values for all measurements"},
+        "max_all_measurements_api": {"url": str(api_paths["max_all_measurements_api"])[4:], "description": "Get maximum values for all measurements"},
+        "statistical_all_measurements_api": {"url": str(api_paths["statistical_all_measurements_api"])[4:], "description": "Get statistical values for all measurements"}
     }
     return render(request, 'icymelt/api_paths_template.html', {'api_paths': data})
