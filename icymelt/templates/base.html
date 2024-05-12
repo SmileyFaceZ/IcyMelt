@@ -22,6 +22,7 @@
         <link href="{% static 'css/apexcharts.css' %}" rel="stylesheet">
         <link href="{% static 'css/tooplate-mini-finance.css' %}" rel="stylesheet">
         <link href="{% static 'css/loading.css' %}" rel="stylesheet">
+        <script src="{% static 'js/loading.js' %}"></script>
 
         <style>
           #list {
@@ -46,82 +47,80 @@
         </div>
 
         <div id="main-content">
-        <header class="navbar sticky-top flex-md-nowrap">
-            <div class="col-md-3 col-lg-3 me-0 px-3 fs-6">
-                <a class="navbar-brand" href="index.html">
-                    <img src="{% static 'images/icymelt-logo.png' %}" class="profile-image img-fluid" alt="IcyMelt-logo">
-                    Icy Melt
-                </a>
-            </div>
+            <header class="navbar sticky-top flex-md-nowrap">
+                <div class="col-md-3 col-lg-3 me-0 px-3 fs-6">
+                    <a class="navbar-brand" href="index.html">
+                        <img src="{% static 'images/icymelt-logo.png' %}" class="profile-image img-fluid" alt="IcyMelt-logo">
+                        Icy Melt
+                    </a>
+                </div>
 
-            <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+                <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-            <div class="navbar-nav me-lg-2">
-                <div class="nav-item text-nowrap d-flex align-items-center">
+                <div class="navbar-nav me-lg-2">
+                    <div class="nav-item text-nowrap d-flex align-items-center">
+                    </div>
+                </div>
+            </header>
+
+            <div class="container-fluid">
+                <div class="row">
+                    <nav id="sidebarMenu" class="col-md-3 col-lg-3 d-md-block sidebar collapse">
+                        <div class="position-sticky py-4 px-3 sidebar-sticky">
+                            <ul class="nav flex-column h-100">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="{% url 'icymelt:home' %}">
+                                        <i class="bi-house-fill me-2"></i>
+                                        Overview
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" id="table">
+                                        <i class="bi-wallet me-2"></i>
+                                        Tables
+                                    </a>
+                                </li>
+
+                                <div id="list">
+                                    <ul>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{% url 'icymelt:ice_exp' %}">
+                                            <i class="bi-table me-2"></i>
+                                            Ice Experiement
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                          <a class="nav-link" href="{% url 'icymelt:material' %}">
+                                              <i class="bi-table me-2"></i>
+                                              Material
+                                          </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{% url 'icymelt:weather' %}">
+                                            <i class="bi-table me-2"></i>
+                                            Weather Condition
+                                        </a>
+                                    </li>
+                                    </ul>
+                                </div>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="setting.html">
+                                        <i class="bi-gear me-2"></i>
+                                        API Query
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </nav>
+
+                    {% block content %}{% endblock %}
                 </div>
             </div>
-        </header>
-
-        <div class="container-fluid">
-            <div class="row">
-                <nav id="sidebarMenu" class="col-md-3 col-lg-3 d-md-block sidebar collapse">
-                    <div class="position-sticky py-4 px-3 sidebar-sticky">
-                        <ul class="nav flex-column h-100">
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="{% url 'icymelt:home' %}">
-                                    <i class="bi-house-fill me-2"></i>
-                                    Overview
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" id="table">
-                                    <i class="bi-wallet me-2"></i>
-                                    Tables
-                                </a>
-                            </li>
-
-                            <div id="list">
-                                <ul>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'icymelt:ice_exp' %}">
-                                        <i class="bi-table me-2"></i>
-                                        Ice Experiement
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                      <a class="nav-link" href="{% url 'icymelt:material' %}">
-                                          <i class="bi-table me-2"></i>
-                                          Material
-                                      </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'icymelt:weather' %}">
-                                        <i class="bi-table me-2"></i>
-                                        Weather Condition
-                                    </a>
-                                </li>
-                                </ul>
-                            </div>
-
-                            <li class="nav-item">
-                                <a class="nav-link" href="setting.html">
-                                    <i class="bi-gear me-2"></i>
-                                    API Query
-                                </a>
-                            </li>
-
-                        </ul>
-                    </div>
-                </nav>
-
-                {% block content %}{% endblock %}
-            </div>
         </div>
-        </div>
-
-
     </body>
 </html>

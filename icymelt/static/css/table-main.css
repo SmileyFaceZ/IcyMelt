@@ -167,13 +167,18 @@ tbody tr:hover {
 }
 
 .format-col2 {
-    width: 80px;
+    width: 10%;
     text-align: center;
 }
 
 .format-col4 {
     font-size: 20px;
     width: 200px;
+    text-align: center;
+}
+
+.format-col5 {
+    width: 50%;
     text-align: center;
 }
 

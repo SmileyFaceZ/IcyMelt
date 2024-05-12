@@ -5,11 +5,10 @@
 {% block tbHead %}
     <tr class="table100-head">
         <th class="format-col1">id</th>
-        <th class="format-col2">date</th>
+        <th class="format-col5">date</th>
         <th class="format-col2">temp</th>
         <th class="format-col2">humidity</th>
-        <th class="format-col2">windspeed</th>
-        <th class="format-col2">weather_cond</th>
+        <th class="format-col5">weather_cond</th>
         <th class="format-col2">thickness</th>
         <th class="format-col2">weight</th>
         <th class="format-col2">material</th>
@@ -24,7 +23,6 @@
             <td class="format-col2">{{ row.date }}</td>
             <td class="format-col2">{{ row.temp }}</td>
             <td class="format-col2">{{ row.humidity }}</td>
-            <td class="format-col2">{{ row.windspeed }}</td>
             <td class="format-col2">{{ row.weather_cond }}</td>
             <td class="format-col2">{{ row.thickness }}</td>
             <td class="format-col2">{{ row.weight }}</td>
@@ -36,7 +34,6 @@
     {% for i in list %}
         <tr>
             <td class="format-col1">{{ i }}</td>
-            <td class="format-col2">{{ i }}</td>
             <td class="format-col2">{{ i }}</td>
             <td class="format-col2">{{ i }}</td>
             <td class="format-col2">{{ i }}</td>
