@@ -15,9 +15,18 @@ Department of Software and Knowledge Engineering, Kasetsart University
 </div>
 
 
-<p>This project measures the rate of ice melting. For example, if the temperature and humidity are at certain levels, how long will it take for the ice to melt? 
+This project measures the rate of ice melting. For example, if the temperature and humidity are at certain levels, how long will it take for the ice to melt? 
   
-  To conduct experiments, we will place the ice on various surfaces such as metal, soil, plastic, and wood.</p>
+To conduct experiments, we will place the ice on various surfaces such as iron, ground, plastic, tile and wood.
+
+## Features:
+- `Overview`: The main page of the project see weather forecast, visualized data and the statistical data of the ice melting.
+- `Tables`: The table view of the ice melting data.
+  - **Ice Experiment**: The ice melting data.
+  - **Material**: The material data.
+  - **Weather Condition**: The weather condition data.
+- `API Query`: The documentation of the API.
+
 
 ### See the [Project Structure](project_structure.md) for more details.
 
