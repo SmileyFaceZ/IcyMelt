@@ -22,7 +22,7 @@ weather_api_data = get_current_weather()
 
 class IceExp(models.Model):
     """A model to represent ice experiment data."""
-    date = models.DateTimeField(default=datetime.datetime.now())
+    date = models.DateTimeField(auto_now_add=True)
     temp = models.DecimalField(default=weather_api_data['current']['temp_c'], max_digits=5, decimal_places=2)
     humidity = models.DecimalField(default=weather_api_data['current']['humidity'], max_digits=5, decimal_places=2)
     weather_cond = models.ForeignKey('WeatherCondition', on_delete=models.CASCADE)
