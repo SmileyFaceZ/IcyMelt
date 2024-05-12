@@ -24,12 +24,17 @@
                 <div class="col-lg-7 col-12">
                     <div class="custom-block bg-white">
                         <h5 class="mb-4">Material Usages</h5>
-                            <div id="pie-chart"></div>
+                        <div id="pie-chart"></div>
                     </div>
 
                     <div class="custom-block bg-white" style="width: 65vw;">
                         <h5 class="mb-4">Average Ice Melting Durations</h5>
                         <div id="chart"></div>
+                    </div>
+
+                    <div class="custom-block bg-white" style="width: 65vw;">
+                        <h5 class="mb-4">Scatter Plot with Temperature and Durations</h5>
+                        <div id="scatter-chart"></div>
                     </div>
                 </div>
                 <div>
@@ -73,4 +78,151 @@
         </div>
     </main>
     </div>
+
+<!-- JAVASCRIPT FILES -->
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'js/apexcharts.min.js' %}"></script>
+        <script src="{% static 'js/custom.js' %}"></script>
+        <script src="{% static 'js/table-toggle.js' %}"></script>
+        <script src="{% static 'js/loading.js' %}"></script>
+
+        <script type="text/javascript">
+            var data = {{ pie_data|safe }};
+            var labels = {{ pie_label|safe }};
+            var options = {
+                series: data,
+                chart: {
+                    width: 480,
+                    type: 'pie',
+                },
+                labels: labels,
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+
+            var chart = new ApexCharts(document.querySelector("#pie-chart"), options);
+            chart.render();
+        </script>
+
+        <script type="text/javascript">
+            var options = {
+                series: {{ series|safe }},
+                chart: {
+                    type: 'line',  // Change to line plot
+                    height: 500,
+                    width: '100%',
+                },
+                plotOptions: {
+                    line: {  // Adjust plot options for line plot
+                        markers: {
+                            size: 6
+                        }
+                    }
+                },
+                dataLabels: {
+                    enabled: true
+                },
+                stroke: {
+                    show: true,
+                    width: 5,
+                    colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0']
+                },
+                xaxis: {
+                    categories: {{ categories|safe }},
+                },
+                yaxis: {
+                    title: {
+                        text: 'Durations (s)'
+                    }
+                },
+                fill: {
+                    opacity: 1
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return val + " seconds"
+                        }
+                    }
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chart"), options);
+            chart.render();
+        </script>
+
+<script type="text/javascript">
+    var data = {{ scatter_data|safe }};
+
+    var options = {
+        series: data.map((group) => ({
+            name: group.name,
+            data: group.data.map(([x, y, weight]) => ({
+                x: x,
+                y: y,
+                z: weight
+            }))
+        })),
+        chart: {
+            height: 350,
+            type: 'scatter',
+            zoom: {
+                enabled: true,
+                type: 'xy'
+            }
+        },
+        xaxis: {
+            tickAmount: 10,
+            title: {
+                text: 'Temperature (°C)'
+            },
+            labels: {
+                formatter: function(val) {
+                    return val.toFixed(0);
+                }
+            }
+        },
+        yaxis: {
+            tickAmount: 10,
+            title: {
+                text: 'Durations (s)'
+            },
+        },
+        tooltip: {
+            y: {
+                formatter: function(val) {
+                    return val + " seconds";
+                }
+            },
+            z: {
+                formatter: function(val) {
+                    return val + " g";
+                }
+            },
+            x: {
+                formatter: function(val) {
+                    return val + "°C";
+                }
+            }
+        },
+        markers: {
+            size: 6
+        }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#scatter-chart"), options);
+    chart.render();
+</script>
+
 {% endblock %}
+
