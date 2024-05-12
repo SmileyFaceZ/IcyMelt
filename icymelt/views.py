@@ -1,17 +1,22 @@
 from django.views.generic import TemplateView
-from icymelt.models import IceExp, Material, WeatherCondition
-from decimal import Decimal
-from rest_framework import generics
-from icymelt.serializers import IceExpSerializer, MaterialSerializer, WeatherConditionSerializer
+from django.db.models import Avg, Sum, Min, Max, Count
+from django.contrib.postgres.aggregates import ArrayAgg
 from decouple import config
-import requests
+from decimal import Decimal
+from icymelt.serializers import IceExpSerializer, MaterialSerializer, WeatherConditionSerializer
+from icymelt.models import IceExp, Material, WeatherCondition
+from rest_framework import generics
 from collections import defaultdict, OrderedDict
 from rest_framework.response import Response
 from rest_framework.views import APIView
+<<<<<<< HEAD
 from django.db.models import Avg, Sum, Min, Max, Count
 from django.urls import get_resolver, get_mod_func
 from django.shortcuts import render
 from . import urls
+=======
+import requests
+>>>>>>> 9d1260efd4547f3c94d26f726cb6798ed6938c83
 
 
 def get_current_weather():
@@ -119,20 +124,64 @@ class HomeView(TemplateView):
         categories = [date.strftime('%Y-%m-%d') for date in sorted_average_durations.keys()]
         return series, categories
 
+    def get_average_data(self, feature):
+        data = IceExp.objects.all().aggregate(avg=Avg(feature))['avg']
+        data = round(data, 2)
+        return data
+
+    def get_min_data(self, feature):
+        data = IceExp.objects.all().aggregate(min=Min(feature))['min']
+        data = round(data, 2)
+        return data
+
+    def get_max_data(self, feature):
+        data = IceExp.objects.all().aggregate(max=Max(feature))['max']
+        data = round(data, 2)
+        return data
+
+    def get_scatter_plot_data(self, field_name):
+        data = []
+        for material in Material.objects.all():
+            mat = {
+                'name': material.type,
+                'data': []
+            }
+            for ice_exp in IceExp.objects.filter(material=material):
+                mat['data'].append([float(getattr(ice_exp, field_name)),
+                                    int(ice_exp.duration),
+                                    float(ice_exp.weight)])
+            data.append(mat)
+
+        return data
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        avg_temp = IceExp.objects.all().aggregate(avg_temp=Avg('temp'))['avg_temp']
-        context['avg_temp'] = round(avg_temp, 2)
-        avg_rh = IceExp.objects.all().aggregate(avg_rh=Avg('humidity'))['avg_rh']
-        context['avg_rh'] = round(avg_rh, 2)
+        context['avg_temp'] = self.get_average_data('temp')
+        context['min_temp'] = self.get_min_data('temp')
+        context['max_temp'] = self.get_max_data('temp')
+
+        context['avg_rh'] = self.get_average_data('humidity')
+        context['min_rh'] = self.get_min_data('humidity')
+        context['max_rh'] = self.get_max_data('humidity')
+
+        context['avg_thickness'] = self.get_average_data('thickness')
+        context['min_thickness'] = self.get_min_data('thickness')
+        context['max_thickness'] = self.get_max_data('thickness')
+
+        context['avg_weight'] = self.get_average_data('weight')
+        context['min_weight'] = self.get_min_data('weight')
+        context['max_weight'] = self.get_max_data('weight')
+
+        context['avg_duration'] = self.get_average_data('duration')
+        context['min_duration'] = self.get_min_data('duration')
+        context['max_duration'] = self.get_max_data('duration')
 
         context['pie_label'], context['pie_data'] = self.get_pie_chart_data()
         context['series'], context['categories'] = self.get_line_plot_data()
 
-        context['cur_temp'] = self.get_cur_temp()
-        context['cur_rh'] = self.get_cur_rh()
-        context['cur_condition'] = self.get_cur_condition()
-        context['cur_wind'] = self.get_cur_wind()
+        context['scatter_temp_data'] = self.get_scatter_plot_data('temp')
+        context['scatter_rh_data'] = self.get_scatter_plot_data('humidity')
+        context['scatter_thickness_data'] = self.get_scatter_plot_data('thickness')
 
         return context
 

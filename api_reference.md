@@ -3,7 +3,7 @@
 #### Get all items
 
 ```http
-  GET /api/items
+  GET /api/
 ```
 
 | Parameter | Type     | Description                |

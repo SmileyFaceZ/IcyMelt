@@ -5,7 +5,7 @@
 #### [Step 2](#step-2-Setup-the-environment): Setup the environment
 - [Step 2.1](#Django-Configuration): Django Configuration
 - [Step 2.2](#Neon-Configuration): Neon Configuration
-- [Step 2.3](#TMD-Configuration): TMD Configuration
+- [Step 2.3](#WeatherAPI-Configuration): WeatherAPI Configuration
 #### [Step 3](#step-3-install-the-required-modules-1) Install the Required Modules
 #### [Step 4](#step-4-database-migrations-1): Database Migrations
 #### [Step 5](#run-server): Run Server
@@ -15,7 +15,7 @@
 ## Step 1: Clone the repository
 Clone the repository and using this command on terminal:
 ```commandline
-git clone https://github.com/SmileyFaceZ/KU-Hub.git
+git clone https://github.com/SmileyFaceZ/IcyMelt.git
 ```
 
 ---
@@ -51,16 +51,17 @@ To get neon database url follow these steps.
 | `PGPORT`                            | Postgres Database Port     |
 
 
-#### TMD Configuration
+#### WeatherAPI Configuration
 
-To get TMD API key follow these steps.
-1. Go to [TMD WEATHER FORECAST API](https://data.tmd.go.th/nwpapi/doc/main/getting_start.html)
-2. Follow the instructions to get the API key
-3. Put your API key in .env file in the root directory of the project
+To get Weather API key follow these steps:
+1. Go to [Weather API](https://www.weatherapi.com/docs/)
+2. Sign up and login.
+3. Follow the instructions to get the API key.
+4. Put your API key in .env file in the root directory of the project.
 
-| Variable                            | Description                |
-|:------------------------------------|----------------------------|
-| `TMD_API_KEY`                       | The Movie Database API Key |
+| Variable                        | Description            |
+|:--------------------------------|------------------------|
+| `API_KEY`                       | Weather API Key        |
 
 ### Create a virtual environment and activate it
 To create a virtual environment, run the following command:
