@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="content">
+<main class="main-wrapper col-md-9 ms-sm-auto py-4 col-lg-9 px-md-4 border-start">
+    <style>
+        .api-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .api-item {
+            margin-bottom: 20px;
+        }
+
+        .api-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .api-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .api-url {
+            color: red;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .api-url:hover {
+            text-decoration: underline;
+        }
+
+        .api-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .api-description {
+            color: #666;
+        }
+    </style>
+    <div class="title-group mb-3">
+        <h1>All API Paths</h1>
+        <ul class="api-list">
+            {% for path_name, data in api_paths.items %}
+            <li class="api-item">
+                <div class="api-card">
+                    <span class="api-url">{{ data.url }}</span> - <span class="api-name">{{ path_name }}</span><br>
+                    <span class="api-description">{{ data.description }}</span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</main>
+</div>
+{% endblock %}
