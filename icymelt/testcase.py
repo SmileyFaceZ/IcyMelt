@@ -4,9 +4,10 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from .models import IceExp, Material, WeatherCondition
 from django.db.models import Avg, Sum, Min, Max
+from rest_framework.exceptions import ErrorDetail
 
 
-class APITestCase(TestCase):
+class APITestWithData(TestCase):
     def setUp(self):
         self.weather_cond1 = WeatherCondition.objects.create(code=200, weather="test_weather_cond")
         self.weather_cond2 = WeatherCondition.objects.create(code=201, weather="test_weather_cond2")
@@ -404,3 +405,93 @@ class APITestCase(TestCase):
             self.assertAlmostEqual(stats['duration']['min'], expected_min_duration, places=2)
             self.assertAlmostEqual(stats['duration']['max'], expected_max_duration, places=2)
             self.assertAlmostEqual(stats['duration']['total'], expected_total_duration, places=2)
+
+
+class APITestNoData(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_ice_exp_list_no_data(self):
+        url = reverse('icymelt:ice_exp_api')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, [])
+
+    def test_ice_exp_detail_no_data(self):
+        url = reverse('icymelt:ice_exp_detail_api', kwargs={'id': 1})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data, {'detail': ErrorDetail(string='No IceExp matches the given query.', code='not_found')})
+
+    def test_ice_exp_by_material_no_data(self):
+        url = reverse('icymelt:experiment_by_material_api', kwargs={'mat_id': 1})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, [])
+
+    def test_ice_exp_by_weather_condition_no_data(self):
+        url = reverse('icymelt:experiment_by_weather_condition_api', kwargs={'id': 1})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, [])
+
+    def test_ice_exp_by_material_and_weather_condition_no_data(self):
+        url = reverse('icymelt:experiment_by_material_and_weather_condition_api', kwargs={'mat_id': 1, 'wea_id': 1})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, [])
+
+    def test_material_list_no_data(self):
+        url = reverse('icymelt:material_api')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, [])
+
+    def test_material_detail_no_data(self):
+        url = reverse('icymelt:material_detail_api', kwargs={'id': 1})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data, {'detail': ErrorDetail(string='No Material matches the given query.', code='not_found')})
+
+    def test_weather_condition_list_no_data(self):
+        url = reverse('icymelt:weather_api')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, [])
+
+    def test_weather_condition_detail_no_data(self):
+        url = reverse('icymelt:weather_condition_detail_api', kwargs={'id': 1})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data, {'detail': ErrorDetail(string='No WeatherCondition matches the given query.', code='not_found')})
+
+    def test_average_all_measurements_no_data(self):
+        url = reverse('icymelt:average_all_measurements_api')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'average': {}})
+
+    def test_total_all_measurements_no_data(self):
+        url = reverse('icymelt:total_all_measurements_api')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'total': {}})
+
+    def test_min_all_measurements_no_data(self):
+        url = reverse('icymelt:min_all_measurements_api')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'min': {}})
+
+    def test_max_all_measurements_no_data(self):
+        url = reverse('icymelt:max_all_measurements_api')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'max': {}})
+
+    def test_statistical_all_measurements_no_data(self):
+        url = reverse('icymelt:statistical_all_measurements_api')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {})
+
