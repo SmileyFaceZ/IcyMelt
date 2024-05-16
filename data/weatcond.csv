@@ -1,0 +1,49 @@
+id,weather,code
+1,Sunny,1000
+2,Partly cloudy,1003
+3,Cloudy,1006
+4,Overcast,1009
+5,Mist,1030
+6,Patchy rain possible,1063
+7,Patchy snow possible,1066
+8,Patchy sleet possible,1069
+9,Patchy freezing drizzle possible,1072
+10,Thundery outbreaks possible,1087
+11,Blowing snow,1114
+12,Blizzard,1117
+13,Fog,1135
+14,Freezing fog,1147
+15,Patchy light drizzle,1150
+16,Light drizzle,1153
+17,Freezing drizzle,1168
+18,Heavy freezing drizzle,1171
+19,Patchy light rain,1180
+20,Light rain,1183
+21,Moderate rain at times,1186
+22,Moderate rain,1189
+23,Heavy rain at times,1192
+24,Heavy rain,1195
+25,Light freezing rain,1198
+26,Moderate or heavy freezing rain,1201
+27,Light sleet,1204
+28,Moderate or heavy sleet,1207
+29,Patchy light snow,1210
+30,Light snow,1213
+31,Patchy moderate snow,1216
+32,Moderate snow,1219
+33,Patchy heavy snow,1222
+34,Heavy snow,1225
+35,Ice pellets,1237
+36,Light rain shower,1240
+37,Moderate or heavy rain shower,1243
+38,Torrential rain shower,1246
+39,Light sleet showers,1249
+40,Moderate or heavy sleet showers,1252
+41,Light snow showers,1255
+42,Moderate or heavy snow showers,1258
+43,Light showers of ice pellets,1261
+44,Moderate or heavy showers of ice pellets,1264
+45,Patchy light rain with thunder,1273
+46,Moderate or heavy rain with thunder,1276
+47,Patchy light snow with thunder,1279
+48,Moderate or heavy snow with thunder,1282
